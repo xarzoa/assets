@@ -5,6 +5,7 @@ import { client, streamImage } from './utils/s3.js';
 import { optimize } from './utils/optimize.js';
 import cors from 'cors'
 import { env } from './utils/config.js';
+import crypto from 'crypto'
 
 const app = express();
 
@@ -46,7 +47,7 @@ const upload = multer({
     },
     key: function (req, file, cb) {
       let ext = file.originalname.split('.');
-      let name = generateRandomString(32);
+      let name = generateRandomString(48);
       let path = `${req.query.id}/${req.query.path || ''}/${name}.${
         ext[ext.length - 1]
       }`;
@@ -123,7 +124,6 @@ app.get('/get/*', async (req, res) => {
 app.post('/upload', upload.single('file'), async (req, res) => {
   const {
     acl,
-    location,
     versionId,
     contentDisposition,
     contentEncoding,
